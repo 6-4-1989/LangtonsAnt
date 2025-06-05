@@ -44,7 +44,6 @@ public class Main
         //JComboBox<Integer> comboBox3 = new JComboBox<>(antRate);
 
         JButton startButton = new JButton("Start");
-        startButton.setFocusable(true);
         startButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) { //I forgor to use constructor for NewAnt :C
