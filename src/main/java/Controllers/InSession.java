@@ -95,7 +95,7 @@ public class InSession extends JPanel implements ActionListener //act as an inte
         return new Color(r, gSpec, b);
     }
 
-    private void UpdateDirection()
+    private void UpdateDirection() throws ArrayIndexOutOfBoundsException
     {
         int i = 0;
         for (CoordData coordData : coordData)
