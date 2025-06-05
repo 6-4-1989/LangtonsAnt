@@ -12,7 +12,7 @@ public class InSession extends JPanel implements ActionListener //act as an inte
     private ArrayList<NewAnt> newAnt = new ArrayList<>();
     private ArrayList<Image> imageChoices = new ArrayList<>();
     private ArrayList<CoordData> coordData = new ArrayList<>();
-    private GridCharacteristics[][] gridCharacteristics = new GridCharacteristics[49][49];
+    private GridCharacteristics[][] gridCharacteristics = new GridCharacteristics[48][48];
     private Timer timer;
     private int x, y;
 
@@ -52,36 +52,47 @@ public class InSession extends JPanel implements ActionListener //act as an inte
         super.paintComponent(g);
         drawCharacter(g);
     }
-    private void drawCharacter(Graphics g) {
+    private void drawCharacter(Graphics g)
+    {
+        for (int y = 0; y < 48; y++)
+        {
+            for (int x = 0; x < 48; x++)
+            {
+                if (!gridCharacteristics[y][x].getColor().equals("white")) {
+                    Color c = convertToRgb(gridCharacteristics[y][x].getColor());
+                    g.setColor(c);
+                    g.fillRect(x * spriteWidth, y * spriteHeight, spriteWidth, spriteHeight);
+                    System.out.println(x * 16 + "," + y * 16);
+                }
+            }
+        }
 
         int i = 0;
         for (CoordData coordData : coordData)
         {
-            if (gridCharacteristics[x / 16][y / 16].getColor().equals("white"))
-            {
-                int r = 0, gSpec = 0, b = 0;
-                switch (newAnt.get(i).getColor())
-                {
-                    case "Blue" -> b = 255;
-                    case "Green" -> gSpec = 255;
-                    case "Red" -> r = 255;
-                }
-                Color c = new Color(r, gSpec, b);
-                g.setColor(c);
-                g.fillRect(x, y, spriteWidth, spriteHeight);
-                gridCharacteristics[x / 16][y / 16].setColor(newAnt.get(i).getColor());
-            }
-            else
-            {
-                g.setColor(Color.WHITE);
-                g.fillRect(x, y, spriteWidth, spriteHeight);
-                gridCharacteristics[x / 16][y / 16].setColor("white");
-            }
-
-
             g.drawImage(imageChoices.get(i), coordData.getX(), coordData.getY(), spriteWidth, spriteHeight, null);
             i++;
         }
+    }
+    private Color convertToRgb(String color)
+    {
+        int r = 0, gSpec = 0, b = 0;
+        switch (color)
+        {
+            case "Blue" -> {
+                b = 255;
+                break;
+            }
+            case "Green" -> {
+                gSpec = 255;
+                break;
+            }
+            case "Red" -> {
+                r = 255;
+                break;
+            }
+        }
+        return new Color(r, gSpec, b);
     }
 
     private void UpdateDirection()
@@ -94,19 +105,23 @@ public class InSession extends JPanel implements ActionListener //act as an inte
                 JOptionPane.showMessageDialog(null, "Game Over");
                 timer.stop();
             }
-            if (gridCharacteristics[x / 16][y / 16].getColor().equals("white"))
+            if (gridCharacteristics[coordData.getY() / 16][coordData.getX() / 16].getColor().equals("white"))
             {
-                x = coordData.getX();
-                y = coordData.getY();
-                gridCharacteristics[x / 16][y / 16].setColor(newAnt.get(i).getColor());
+                gridCharacteristics[coordData.getY() / 16][coordData.getX() / 16] =
+                        new GridCharacteristics(newAnt.get(i).getColor());
                 updateAntWhite(coordData.getAntDirection(), coordData);
+                int gridX = coordData.getX() / 16;
+                int gridY = coordData.getY() / 16;
+                System.out.println("Ant " + i + ": pixelPos(" + coordData.getX() + "," + coordData.getY() + ") -> gridPos(" + gridX + "," + gridY + ")");
             }
             else
             {
-                x = coordData.getX();
-                y = coordData.getY();
-                gridCharacteristics[x / 16][y / 16].setColor("white");
+                gridCharacteristics[coordData.getY() / 16][coordData.getX() / 16] =
+                        new GridCharacteristics("white");
                 updateAntBlack(coordData.getAntDirection(), coordData);
+                int gridX = coordData.getX() / 16;
+                int gridY = coordData.getY() / 16;
+                System.out.println("Ant " + i + ": pixelPos(" + coordData.getX() + "," + coordData.getY() + ") -> gridPos(" + gridX + "," + gridY + ")");
             }
             i++;
         }
@@ -116,115 +131,64 @@ public class InSession extends JPanel implements ActionListener //act as an inte
         switch (antDirection)
         {
             case 0 -> {
+                System.out.println(antDirection);
                 coordData.setAntDirection(3);
                 coordData.setY(coordData.getY() + 16);
+                System.out.println("90 clockwise down" + coordData.getAntDirection());
             }
             case 1 -> {
+                System.out.println(antDirection);
                 coordData.setAntDirection(2);
                 coordData.setY(coordData.getY() - 16);
+                System.out.println("90 clockwise up" + coordData.getAntDirection());
             }
             case 2 -> {
+                System.out.println(antDirection);
                 coordData.setAntDirection(0);
                 coordData.setX(coordData.getX() + 16);
+                System.out.println("90 clockwise right" + coordData.getAntDirection());
             }
             case 3 -> {
+                System.out.println(antDirection);
                 coordData.setAntDirection(1);
                 coordData.setX(coordData.getX() - 16);
+                System.out.println("90 clockwise left" + coordData.getAntDirection());
             }
         }
     }
     private void updateAntBlack(int antDirection, CoordData coordData) {
         switch (antDirection) {
             case 0 -> {
+                System.out.println(antDirection);
                 coordData.setAntDirection(2);
                 coordData.setY(coordData.getY() - 16);
+                System.out.println("90 cc up"  + coordData.getAntDirection());
             }
             case 1 -> {
+                System.out.println(antDirection);
                 coordData.setAntDirection(3);
                 coordData.setY(coordData.getY() + 16);
+                System.out.println("90 cc down" + coordData.getAntDirection());
             }
             case 2 -> {
+                System.out.println(antDirection);
                 coordData.setAntDirection(1);
                 coordData.setX(coordData.getX() - 16);
+                System.out.println("90 cc left" + coordData.getAntDirection());
             }
             case 3 -> {
+                System.out.println(antDirection);
                 coordData.setAntDirection(0);
                 coordData.setX(coordData.getX() + 16);
+                System.out.println("90 cc right"  + coordData.getAntDirection());
             }
         }
     }
-        /* mb I nested too hard here (all of this is slop from misreading)
-        for (int i = 0; i < coordData.size(); i++) {
-            if (doesRandValueWork(getRndValue(), i,  coordData.get(i)))
-            {
-                switch (i)
-                {
-                    case 0 -> coordData.get(i).setX(coordData.get(i).getX() + 16);
-                    case 1 -> coordData.get(i).setX(coordData.get(i).getX() - 16);
-                    case 2 -> coordData.get(i).setY(coordData.get(i).getY() + 16);
-                    case 3 -> coordData.get(i).setY(coordData.get(i).getY() - 16);
-                }
-            }
-            else
-            {
-                try
-                {
-                    i--;
-                }
-                catch (Exception e)
-                {
-                    i = 0;
-                }
-            }
-        }
 
-        for (CoordData coordData : coordData)
-        {
-            if (coordData.getX() >= 768 || coordData.getX() < 0 || coordData.getY() >= 768 || coordData.getY() < 0)
-            {
-                timer.stop();
-                JOptionPane.showMessageDialog(null, "Simulation Complete!");
-            }
-        }
-    }
-    private int getRndValue()
+    public void pauseGame()
     {
-        Random rand = new Random();
-        return rand.nextInt(4);
+        timer.stop();
     }
-    private boolean doesRandValueWork(int randValue, int index, CoordData coord)
-    {
-        boolean canMove = false;
-
-        switch (randValue)
-        { //test move right
-            case 0 ->  canMove = isOnSameArea(coord.getX() + 16, coord.getY(), coord.getAntDirection(), randValue);
-            //test move left
-            case 1 ->  canMove = isOnSameArea(coord.getX() - 16, coord.getY(), coord.getAntDirection(), randValue);
-            //test move up
-            case 2 -> canMove = isOnSameArea(coord.getX(), coord.getY() + 16, coord.getAntDirection(), randValue);
-            //test move down
-            case 3 -> canMove = isOnSameArea(coord.getX(), coord.getY() - 16, coord.getAntDirection(), randValue);
-        }
-
-        return canMove == true;
-    }
-    private boolean isOnSameArea(int newX, int newY, int antDirection, int randValue)
-    {
-        for (CoordData coord : coordData) {
-            if (coord.getX() == newX || coord.getY() == newY)
-            {
-                return true;
-            } //got lazy here
-            if (antDirection == randValue || antDirection + 1 == randValue && antDirection + 1 > 2 ||
-                    antDirection + 1 < 1  || antDirection - 1 == randValue
-                    && antDirection - 1 < 1 || antDirection - 1 > 2)
-            {
-                return true;
-            }
-        }
-        return false;
-    } */
 
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -251,8 +215,8 @@ public class InSession extends JPanel implements ActionListener //act as an inte
         if (!newAnt.isEmpty())
         {
             UpdateDirection();
+            repaint();
         }
-        repaint();
     }
 }
 

@@ -10,7 +10,7 @@ import java.util.ArrayList;
 /*
 Name: Kevin Lin
 Date Due: 6/4/2025 (anniversary of Tiananmen :D)
-Description: Langton's Ant but with customizable
+Description: Langton's Ant (Implemented from scratch) with customizable
 colors, characters, and the potential for multiple
 instances. Play as your favorite politician if you
 want
@@ -58,9 +58,18 @@ public class Main
                 //antInstance.setCrawlRate((Integer) comboBox3.getSelectedItem());
 
                 switch (selectedCharacter) {
-                    case "Donald Trump" -> imagePath = "/donald-trump.png";
-                    case "Jack Morozov" -> imagePath = "/jack-morozov.png";
-                    case "Henry Clay" -> imagePath = "/henry-clay.png";
+                    case "Donald Trump" -> {
+                        imagePath = "/donald-trump.png";
+                        break;
+                    }
+                    case "Jack Morozov" -> {
+                        imagePath = "/jack-morozov.png";
+                        break;
+                    }
+                    case "Henry Clay" -> {
+                        imagePath = "/henry-clay.png";
+                        break;
+                    }
                 }
                 antInstance.setAntImage(imagePath);
                 newAnts.add(antInstance);
@@ -68,7 +77,25 @@ public class Main
                 _inSession.setNewAnt(newAnts);
             }
         });
+        JButton resetButton = new JButton("Reset");
+        resetButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (_inSession != null) {
+                    _inSession.pauseGame();
+                }
+                newAnts.clear();
+                frame.remove(_inSession);
+                _inSession = new InSession();
+                frame.add(_inSession);
+                frame.revalidate();
+                frame.repaint();
+                _inSession.requestFocus();
+            }
+        });
+
         myGamePanel.add(startButton);
+        myGamePanel.add(resetButton);
         myGamePanel.add(comboBox);
         myGamePanel.add(comboBox2);
         //myGamePanel.add(comboBox3);
