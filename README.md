@@ -1,0 +1,1 @@
+Fun Langton's Ant implementation for the APCSA Final Project, made from scratch in Model-Viewer-Presenter format. Allows up to 3 ants at once, customizable colors, and customizable characters (you can play as Donald Trump!).
